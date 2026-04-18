@@ -1,0 +1,123 @@
+@reference 'tailwindcss';
+
+// ── Shared auth page styles (also imported by register) ──────────────
+.auth-bg {
+    background: linear-gradient(135deg, #e8f8ef 0%, #f5f7f6 55%, #eff3ff 100%);
+}
+
+.auth-card {
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow:
+        0 4px 6px -1px rgba(0, 0, 0, 0.05),
+        0 20px 50px -10px rgba(126, 215, 165, 0.18),
+        0 0 0 1px rgba(126, 215, 165, 0.12);
+    overflow: hidden;
+}
+
+// ── Brand Header ─────────────────────────────────────────────────────
+.brand-bar {
+    @apply flex items-center gap-2.5 px-8 py-5;
+    background: linear-gradient(90deg, #7ED7A5, #5ec98e);
+}
+
+.brand-logo {
+    @apply text-2xl leading-none;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15));
+}
+
+.brand-name {
+    @apply text-white font-bold text-xl tracking-tight;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+// ── Card Body ────────────────────────────────────────────────────────
+.card-body {
+    @apply px-8 py-8;
+}
+
+.card-title {
+    @apply text-2xl font-bold text-[#1F2937] mb-1;
+}
+
+.card-subtitle {
+    @apply text-sm text-gray-500 mb-7;
+}
+
+// ── Form Fields ──────────────────────────────────────────────────────
+.field-group {
+    @apply flex flex-col gap-1.5;
+}
+
+.field-label {
+    @apply text-sm font-semibold text-[#1F2937];
+}
+
+.field-input {
+    @apply w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-[#1F2937]
+           bg-gray-50 outline-none transition-all duration-200 placeholder:text-gray-400;
+
+    &:focus {
+        @apply bg-white border-[#7ED7A5];
+        box-shadow: 0 0 0 3px rgba(126, 215, 165, 0.18);
+    }
+
+    &--error {
+        @apply border-red-300 bg-red-50;
+
+        &:focus {
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
+        }
+    }
+}
+
+.field-error {
+    @apply text-xs text-red-500 font-medium mt-0.5;
+}
+
+// ── Password wrapper ─────────────────────────────────────────────────
+.password-wrapper {
+    @apply relative;
+}
+
+.pw-toggle {
+    @apply absolute right-3 top-1/2 -translate-y-1/2 p-1 text-base rounded-md
+           text-gray-400 hover:text-gray-600 transition-colors duration-150
+           bg-transparent border-none cursor-pointer outline-none;
+}
+
+// ── Submit Button ────────────────────────────────────────────────────
+.btn-primary {
+    @apply w-full flex items-center justify-center gap-2 py-3 rounded-xl
+           text-sm font-bold text-white transition-all duration-200;
+    background: linear-gradient(135deg, #7ED7A5, #5ec98e);
+    box-shadow: 0 4px 14px rgba(126, 215, 165, 0.4);
+
+    &:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(126, 215, 165, 0.55);
+    }
+
+    &:active:not(:disabled) {
+        transform: translateY(0);
+    }
+
+    &:disabled {
+        @apply opacity-70 cursor-not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+}
+
+.btn-spinner {
+    @apply inline-block w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin;
+}
+
+// ── Footer link ──────────────────────────────────────────────────────
+.auth-footer {
+    @apply text-sm text-gray-500 text-center mt-6;
+}
+
+.auth-link {
+    @apply font-semibold text-[#5ec98e] hover:text-[#3db877] transition-colors duration-150;
+}

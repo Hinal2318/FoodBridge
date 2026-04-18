@@ -1,0 +1,89 @@
+@reference 'tailwindcss';
+
+// food-card.component.scss
+
+.food-card {
+    @apply bg-white rounded-2xl overflow-hidden flex flex-col;
+    border: 1px solid rgba(126, 215, 165, 0.18);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(126, 215, 165, 0.2), 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+}
+
+// ── Request Pickup button ────────────────────────────────────────
+.btn-request {
+    @apply flex items-center justify-center gap-1.5 text-sm font-semibold text-white rounded-xl px-4 py-2.5 transition-all duration-200;
+    min-height: 40px;
+    background-color: #7ED7A5;
+
+    &:hover:not(:disabled) {
+        background-color: #5cc98a;
+        box-shadow: 0 4px 14px rgba(126, 215, 165, 0.45);
+        transform: translateY(-1px);
+    }
+
+    &:active:not(:disabled) {
+        transform: translateY(0);
+    }
+
+    &:disabled {
+        @apply opacity-60 cursor-not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    // Sent state
+    &--sent {
+        background-color: #E8F8EF !important;
+        color: #22a261 !important;
+        border: 1px solid rgba(126, 215, 165, 0.4) !important;
+        box-shadow: none !important;
+        transform: none !important;
+    }
+}
+
+// ── View Requests button ─────────────────────────────────────────
+.btn-secondary {
+    @apply flex items-center gap-1.5 text-[11px] font-semibold rounded-xl px-3 py-2.5 transition-all duration-150;
+    min-height: 40px;
+    color: #6B8CFF;
+    background-color: rgba(107, 140, 255, 0.07);
+    border: 1px solid rgba(107, 140, 255, 0.25);
+
+    &:hover {
+        background-color: rgba(107, 140, 255, 0.14);
+        border-color: rgba(107, 140, 255, 0.45);
+    }
+}
+
+// ── Delete button ────────────────────────────────────────────────
+.btn-delete {
+    @apply flex items-center gap-1.5 text-[11px] font-semibold text-red-500 rounded-xl px-3 py-2.5 transition-all duration-150;
+    min-height: 40px;
+    background-color: rgba(239, 68, 68, 0.05);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+
+    &:hover:not(:disabled) {
+        background-color: rgba(239, 68, 68, 0.1);
+        border-color: rgba(239, 68, 68, 0.35);
+    }
+
+    &:disabled {
+        @apply opacity-50 cursor-not-allowed;
+    }
+}
+
+// ── Mobile ───────────────────────────────────────────────────────
+@media (max-width: 375px) {
+
+    .btn-request,
+    .btn-secondary,
+    .btn-delete {
+        @apply w-full justify-center;
+        flex: none;
+    }
+}

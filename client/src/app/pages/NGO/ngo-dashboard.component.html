@@ -1,0 +1,159 @@
+<div class="min-h-screen bg-[#F5F7F6] flex flex-col">
+
+  <main class="flex-1 p-8">
+
+    <!-- Page Header -->
+    <div class="flex flex-wrap items-start justify-between gap-4 mb-8">
+      <div>
+        <h1 class="text-2xl font-bold text-[#1F2937] mb-1">
+          Welcome back, {{ user?.name }} 👋
+        </h1>
+        <p class="text-sm text-gray-500">
+          Here's what's happening with food donations today.
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <a
+          routerLink="/ngo/available-food"
+          class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#7ED7A5] text-white font-semibold rounded-lg text-sm
+                 hover:bg-[#5ec98e] hover:-translate-y-0.5 hover:shadow-md transition-all duration-200"
+        >
+          🔍 Browse Available Food
+        </a>
+        <a
+          routerLink="/ngo/requests"
+          class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-[#1F2937] font-semibold rounded-lg text-sm
+                 border border-gray-200 hover:border-[#7ED7A5] hover:text-[#7ED7A5] transition-all duration-200"
+        >
+          📋 View My Requests
+        </a>
+      </div>
+    </div>
+
+    <!-- Loader -->
+    <app-loader *ngIf="loading"></app-loader>
+
+    <!-- Error Alert -->
+    <app-alert
+      *ngIf="error"
+      type="error"
+      [message]="error"
+      (dismissed)="error = ''"
+    ></app-alert>
+
+    <ng-container *ngIf="!loading && !error && stats">
+
+      <!-- ── Stats Cards (3) ─────────────────────────────────── -->
+      <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
+
+        <app-stats-card
+          title="Available Food"
+          [value]="stats.availableFood"
+          [icon]="Package"
+          bgClass="border-blue-100 bg-white"
+          textClass="text-[#6B8CFF]"
+          iconClass="bg-blue-50 text-blue-500">
+        </app-stats-card>
+
+        <app-stats-card
+          title="Pickup Requests Sent"
+          [value]="stats.pickupRequestsSent"
+          [icon]="ClipboardList"
+          bgClass="border-purple-100 bg-white"
+          textClass="text-purple-500"
+          iconClass="bg-purple-50 text-purple-500">
+        </app-stats-card>
+
+        <app-stats-card
+          title="Completed Pickups"
+          [value]="stats.completedPickups"
+          [icon]="CheckCircle"
+          bgClass="border-green-100 bg-white"
+          textClass="text-[#7ED7A5]"
+          iconClass="bg-green-50 text-green-500">
+        </app-stats-card>
+
+      </section>
+
+      <!-- ── Quick Action Buttons ───────────────────────────── -->
+      <section class="mb-10">
+        <h2 class="text-base font-bold text-[#1F2937] mb-4 pb-2 border-b-2 border-[#E8F8EF]">
+          Quick Actions
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+          <a
+            routerLink="/ngo/available-food"
+            class="flex items-center gap-4 p-5 bg-white rounded-xl border border-gray-200 shadow-sm
+                   hover:border-[#7ED7A5] hover:-translate-y-0.5 hover:shadow-md transition-all duration-200"
+          >
+            <span class="text-2xl w-12 h-12 flex items-center justify-center bg-[#E8F8EF] rounded-xl shrink-0">🔍</span>
+            <div class="flex-1 min-w-0">
+              <p class="font-semibold text-sm mb-0.5">Browse Available Food</p>
+              <p class="text-xs text-gray-400">Find food near you to request pickup</p>
+            </div>
+            <span class="text-[#7ED7A5] font-bold text-lg">→</span>
+          </a>
+
+          <a
+            routerLink="/ngo/requests"
+            class="flex items-center gap-4 p-5 bg-white rounded-xl border border-gray-200 shadow-sm
+                   hover:border-[#6B8CFF] hover:-translate-y-0.5 hover:shadow-md transition-all duration-200"
+          >
+            <span class="text-2xl w-12 h-12 flex items-center justify-center bg-[#EFF3FF] rounded-xl shrink-0">📋</span>
+            <div class="flex-1 min-w-0">
+              <p class="font-semibold text-sm mb-0.5">View My Requests</p>
+              <p class="text-xs text-gray-400">Track status of your pickup requests</p>
+            </div>
+            <span class="text-[#6B8CFF] font-bold text-lg">→</span>
+          </a>
+
+        </div>
+      </section>
+
+      <!-- ── Recent Donations ────────────────────────────────── -->
+      <section class="mb-10">
+        <h2 class="text-base font-bold text-[#1F2937] mb-4 pb-2 border-b-2 border-[#E8F8EF]">
+          Recent Donations
+        </h2>
+
+        <div *ngIf="stats.recentDonations?.length; else emptyDonations" class="flex flex-col gap-3 donations-list">
+          <div
+            *ngFor="let donation of stats.recentDonations"
+            class="flex items-center gap-4 px-5 py-4 bg-white rounded-xl border border-gray-200
+                   shadow-sm hover:translate-x-1 transition-transform duration-150"
+          >
+            <span class="text-xl w-11 h-11 flex items-center justify-center bg-[#E8F8EF] rounded-lg shrink-0">🎁</span>
+            <div class="flex-1 min-w-0">
+              <p class="font-semibold text-sm text-[#1F2937] truncate mb-0.5">{{ donation.foodId?.name }}</p>
+              <p class="text-xs text-gray-400 truncate">
+                {{ donation.restaurantId?.name }}
+                <span *ngIf="donation.restaurantId?.location">· {{ donation.restaurantId.location }}</span>
+              </p>
+            </div>
+            <span class="text-xs text-gray-400 whitespace-nowrap">{{ formatDate(donation.updatedAt) }}</span>
+            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-[#E8F8EF] text-green-700 whitespace-nowrap">
+              Completed
+            </span>
+          </div>
+        </div>
+
+        <ng-template #emptyDonations>
+          <div class="flex flex-col items-center justify-center py-14 bg-white rounded-xl
+                      border-2 border-dashed border-gray-200 gap-3 text-center">
+            <span class="text-4xl">🍽️</span>
+            <p class="text-gray-400 text-sm">No completed pickups yet.</p>
+            <a
+              routerLink="/ngo/available-food"
+              class="mt-1 inline-flex items-center gap-2 px-5 py-2.5 bg-[#7ED7A5] text-white
+                     font-semibold rounded-lg text-sm hover:bg-[#5ec98e] transition-colors duration-200"
+            >
+              Start Browsing Food
+            </a>
+          </div>
+        </ng-template>
+      </section>
+
+    </ng-container>
+  </main>
+</div>

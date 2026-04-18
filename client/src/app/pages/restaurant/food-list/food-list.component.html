@@ -1,0 +1,102 @@
+<div class="min-h-screen bg-[#F5F7F6] p-6 md:p-8">
+
+  <!-- Header -->
+  <div class="flex flex-wrap items-start justify-between gap-4 mb-8">
+    <div>
+      <a routerLink="/restaurant/dashboard"
+         class="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 mb-2 transition-colors">
+        ← Back to Dashboard
+      </a>
+      <h1 class="text-2xl font-bold text-[#1F2937]">My Food Listings</h1>
+      <p class="text-sm text-gray-500 mt-0.5">Manage all your posted food donations.</p>
+    </div>
+    <a routerLink="/restaurant/add-food"
+       class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#7ED7A5] text-white font-semibold rounded-xl text-sm
+              hover:bg-[#5ec98e] hover:-translate-y-0.5 hover:shadow-md transition-all duration-200">
+      <lucide-icon [img]="Package" class="w-4 h-4"></lucide-icon>
+      + Add Food
+    </a>
+  </div>
+
+  <app-alert *ngIf="successMsg" type="success" [message]="successMsg" (dismissed)="successMsg = ''" class="block mb-4"></app-alert>
+  <app-alert *ngIf="error"      type="error"   [message]="error"      (dismissed)="error = ''"      class="block mb-4"></app-alert>
+
+  <app-loader *ngIf="loading"></app-loader>
+
+  <!-- Food Cards Grid -->
+  <div *ngIf="!loading" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+
+    <!-- Empty State -->
+    <div *ngIf="foods.length === 0"
+         class="col-span-full flex flex-col items-center justify-center py-20 bg-white rounded-2xl border-2 border-dashed border-gray-200 gap-3 text-center">
+      <span class="text-5xl">🍱</span>
+      <p class="text-gray-500 font-medium">No food listings yet.</p>
+      <p class="text-gray-400 text-sm">Start sharing surplus food with NGOs in your area.</p>
+      <a routerLink="/restaurant/add-food"
+         class="mt-2 inline-flex items-center gap-2 px-6 py-2.5 bg-[#7ED7A5] text-white font-semibold rounded-xl text-sm
+                hover:bg-[#5ec98e] transition-colors">
+        Add First Listing
+      </a>
+    </div>
+
+    <!-- Food Card -->
+    <div *ngFor="let food of foods"
+         class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:-translate-y-1 hover:shadow-md transition-all duration-200">
+
+      <!-- Card Top Color Bar by status -->
+      <div [ngClass]="{
+        'bg-[#7ED7A5]': food.status === 'available',
+        'bg-[#6B8CFF]': food.status === 'requested',
+        'bg-gray-400':  food.status === 'picked'
+      }" class="h-1.5 w-full"></div>
+
+      <div class="p-5">
+        <!-- Name & Status -->
+        <div class="flex items-start justify-between gap-2 mb-3">
+          <h3 class="font-bold text-[#1F2937] text-base leading-tight">{{ food.name }}</h3>
+          <span [ngClass]="statusClass(food.status)"
+                class="px-2.5 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap capitalize">
+            {{ food.status }}
+          </span>
+        </div>
+
+        <!-- Meta Info -->
+        <div class="space-y-2 mb-4">
+          <div class="flex items-center gap-2 text-sm text-gray-600">
+            <lucide-icon [img]="Package" class="w-4 h-4 text-gray-400 shrink-0"></lucide-icon>
+            <span>{{ food.quantity }} {{ food.unit }}</span>
+          </div>
+          <div class="flex items-center gap-2 text-sm" [ngClass]="isExpired(food.expiryTime) ? 'text-red-500' : 'text-gray-600'">
+            <lucide-icon [img]="Clock" class="w-4 h-4 shrink-0" [ngClass]="isExpired(food.expiryTime) ? 'text-red-400' : 'text-gray-400'"></lucide-icon>
+            <span>{{ getExpiryLabel(food.expiryTime) }}</span>
+          </div>
+          <div class="flex items-center gap-2 text-sm text-gray-600">
+            <lucide-icon [img]="MapPin" class="w-4 h-4 text-gray-400 shrink-0"></lucide-icon>
+            <span class="truncate">{{ food.location }}</span>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <p *ngIf="food.description" class="text-xs text-gray-400 mb-4 line-clamp-2">{{ food.description }}</p>
+
+        <!-- Actions -->
+        <div class="flex items-center justify-between gap-2 pt-3 border-t border-gray-100">
+          <span class="text-xs text-gray-400">
+            {{ food.createdAt | date:'d MMM, y' }}
+          </span>
+          <button
+            *ngIf="food.status === 'available'"
+            (click)="delete(food)"
+            [disabled]="deletingId === food._id"
+            class="flex items-center gap-1.5 text-xs text-red-500 hover:text-red-700 px-3 py-1.5
+                   rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50"
+          >
+            <lucide-icon [img]="Trash2" class="w-3.5 h-3.5"></lucide-icon>
+            {{ deletingId === food._id ? 'Deleting…' : 'Delete' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

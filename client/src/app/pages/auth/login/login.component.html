@@ -1,0 +1,102 @@
+<div class="auth-bg min-h-screen flex items-center justify-center px-4 py-12">
+
+  <!-- Card -->
+  <div class="auth-card w-full max-w-[420px]">
+
+    <!-- ── Brand Bar ── -->
+    <div class="brand-bar">
+      <span class="brand-logo">🌿</span>
+      <span class="brand-name">FoodBridge</span>
+    </div>
+
+    <!-- ── Card Body ── -->
+    <div class="card-body">
+
+      <h1 class="card-title">Welcome back</h1>
+      <p class="card-subtitle">Sign in to continue to your dashboard</p>
+
+      <!-- Error Alert -->
+      <app-alert
+        *ngIf="errorMsg"
+        type="error"
+        [message]="errorMsg"
+        [dismissible]="true"
+        (dismissed)="errorMsg = ''"
+        class="block mb-5"
+      ></app-alert>
+
+      <!-- Form -->
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="flex flex-col gap-5">
+
+        <!-- Email -->
+        <div class="field-group">
+          <label for="login-email" class="field-label">Email address</label>
+          <input
+            id="login-email"
+            type="email"
+            formControlName="email"
+            placeholder="you@example.com"
+            autocomplete="email"
+            class="field-input"
+            [class.field-input--error]="email.invalid && email.touched"
+          />
+          <p *ngIf="email.touched && email.errors?.['required']" class="field-error">
+            Email is required.
+          </p>
+          <p *ngIf="email.touched && email.errors?.['email']" class="field-error">
+            Please enter a valid email address.
+          </p>
+        </div>
+
+        <!-- Password -->
+        <div class="field-group">
+          <label for="login-password" class="field-label">Password</label>
+          <div class="password-wrapper">
+            <input
+              id="login-password"
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="password"
+              placeholder="••••••••"
+              autocomplete="current-password"
+              class="field-input pr-12"
+              [class.field-input--error]="password.invalid && password.touched"
+            />
+            <button
+              type="button"
+              (click)="togglePassword()"
+              class="pw-toggle"
+              [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+            >
+              {{ showPassword ? '🙈' : '👁️' }}
+            </button>
+          </div>
+          <p *ngIf="password.touched && password.errors?.['required']" class="field-error">
+            Password is required.
+          </p>
+          <p *ngIf="password.touched && password.errors?.['minlength']" class="field-error">
+            Password must be at least 6 characters.
+          </p>
+        </div>
+
+        <!-- Submit -->
+        <button
+          id="login-submit"
+          type="submit"
+          class="btn-primary"
+          [disabled]="loading"
+        >
+          <span *ngIf="loading" class="btn-spinner"></span>
+          {{ loading ? 'Signing in…' : 'Sign In' }}
+        </button>
+
+      </form>
+
+      <!-- Footer link -->
+      <p class="auth-footer">
+        Don't have an account?
+        <a routerLink="/register" class="auth-link">Create one</a>
+      </p>
+
+    </div>
+  </div>
+</div>

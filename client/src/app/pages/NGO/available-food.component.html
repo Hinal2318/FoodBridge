@@ -1,0 +1,87 @@
+<div class="min-h-screen bg-[#F5F7F6] p-6 md:p-8">
+
+  <!-- Header & Search -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+    <div>
+      <h1 class="text-2xl font-bold text-[#1F2937] mb-1">Available Food</h1>
+      <p class="text-sm text-gray-500">Discover surplus food from restaurants near you.</p>
+    </div>
+
+    <!-- City Search -->
+    <div class="relative max-w-sm w-full md:w-72">
+      <lucide-icon [img]="Search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"></lucide-icon>
+      <input
+        type="text"
+        [(ngModel)]="searchCity"
+        (keyup.enter)="onSearch()"
+        placeholder="Filter by city..."
+        class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#7ED7A5] focus:ring-2 focus:ring-[#7ED7A5]/20 transition-all shadow-sm"
+      />
+    </div>
+  </div>
+
+  <app-alert *ngIf="successMsg" type="success" [message]="successMsg" (dismissed)="successMsg = ''" class="block mb-4"></app-alert>
+  <app-alert *ngIf="error"      type="error"   [message]="error"      (dismissed)="error = ''"      class="block mb-4"></app-alert>
+
+  <app-loader *ngIf="loading"></app-loader>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && foods.length === 0" class="flex flex-col items-center justify-center py-24 bg-white rounded-2xl border-2 border-dashed border-gray-200 gap-3 text-center">
+    <span class="text-5xl">🥺</span>
+    <p class="text-gray-500 font-medium text-lg">No food available right now.</p>
+    <p class="text-gray-400 text-sm">Check back later or try widening your search.</p>
+  </div>
+
+  <!-- Cards Grid -->
+  <div *ngIf="!loading && foods.length > 0" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+
+    <div *ngFor="let food of foods" class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col hover:-translate-y-1 hover:shadow-md transition-all duration-200">
+      
+      <!-- Restaurant Header -->
+      <div class="px-5 py-4 border-b border-gray-50 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center text-orange-500 shrink-0">
+          <lucide-icon [img]="MapPin" class="w-5 h-5"></lucide-icon>
+        </div>
+        <div class="min-w-0 flex-1">
+          <h3 class="font-bold text-[#1F2937] text-sm truncate">{{ food.restaurantId?.name || 'Restaurant' }}</h3>
+          <p class="text-xs text-gray-500 truncate">{{ food.location }}</p>
+        </div>
+      </div>
+
+      <!-- Food Details -->
+      <div class="p-5 flex-1">
+        <h4 class="font-bold text-lg text-[#1F2937] mb-3">{{ food.name }}</h4>
+        
+        <div class="grid grid-cols-2 gap-3 mb-4">
+          <div class="flex items-center gap-2 text-sm text-gray-600 bg-gray-50 px-3 py-2 rounded-lg">
+            <lucide-icon [img]="Package" class="w-4 h-4 text-gray-400 shrink-0"></lucide-icon>
+            <span class="font-medium">{{ food.quantity }} {{ food.unit }}</span>
+          </div>
+          <div class="flex items-center gap-2 text-sm bg-gray-50 px-3 py-2 rounded-lg" [ngClass]="isExpired(food.expiryTime) ? 'text-red-500 bg-red-50' : 'text-gray-600'">
+            <lucide-icon [img]="Clock" class="w-4 h-4 shrink-0" [ngClass]="isExpired(food.expiryTime) ? 'text-red-400' : 'text-gray-400'"></lucide-icon>
+            <span class="font-medium">{{ getExpiryLabel(food.expiryTime) }}</span>
+          </div>
+        </div>
+
+        <p *ngIf="food.description" class="text-sm text-gray-500 line-clamp-2 leading-relaxed">
+          {{ food.description }}
+        </p>
+      </div>
+
+      <!-- Action -->
+      <div class="p-5 pt-0 mt-auto">
+        <button
+          (click)="requestFood(food._id)"
+          [disabled]="requestingId === food._id || isExpired(food.expiryTime)"
+          class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#6B8CFF] hover:bg-[#577fff] text-white font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:-translate-y-0.5"
+        >
+          <lucide-icon *ngIf="requestingId === food._id" [img]="Loader2" class="w-5 h-5 animate-spin"></lucide-icon>
+          <lucide-icon *ngIf="requestingId !== food._id" [img]="HandHeart" class="w-5 h-5"></lucide-icon>
+          {{ requestingId === food._id ? 'Requesting…' : (isExpired(food.expiryTime) ? 'Expired' : 'Request Pickup') }}
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+</div>

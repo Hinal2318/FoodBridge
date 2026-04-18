@@ -1,0 +1,149 @@
+<div
+  class="food-card group"
+  [class.opacity-60]="isExpired()"
+  [class.ring-2]="isExpiringSoon()"
+  [class.ring-amber-300]="isExpiringSoon()"
+>
+
+  <!-- ── Top bar: category emoji + status pill ── -->
+  <div class="flex items-center justify-between px-4 py-3 bg-[#E8F8EF] border-b border-[#7ED7A5]/20">
+    <span class="text-2xl leading-none">{{ getCategoryEmoji() }}</span>
+    <span
+      *ngIf="authService.getRole() === 'restaurant'"
+      class="text-[10px] font-bold px-2.5 py-1 rounded-full"
+      [ngClass]="getStatusClasses()"
+    >
+      {{ getStatusLabel() }}
+    </span>
+  </div>
+
+  <!-- ── Body ── -->
+  <div class="px-4 pt-4 pb-3 flex-1 flex flex-col gap-3">
+
+    <!-- Name + Restaurant -->
+    <div>
+      <h3 class="text-[15px] font-bold text-[#1F2937] leading-snug mb-1">
+        {{ food.name }}
+      </h3>
+      <div class="flex items-center gap-1.5 text-gray-500">
+        <lucide-icon [img]="Store" class="w-3.5 h-3.5 text-[#7ED7A5] flex-shrink-0" />
+        <span class="text-[11px] font-medium">{{ food.restaurantName }}</span>
+      </div>
+    </div>
+
+    <!-- Meta grid -->
+    <div class="grid grid-cols-2 gap-2">
+
+      <!-- Quantity -->
+      <div class="flex items-start gap-2 bg-gray-50 rounded-xl p-2.5">
+        <lucide-icon [img]="ShoppingBasket" class="w-4 h-4 text-[#7ED7A5] mt-0.5 flex-shrink-0" />
+        <div>
+          <p class="text-[9px] font-semibold uppercase tracking-wide text-gray-400 mb-0.5">Quantity</p>
+          <p class="text-[11px] font-bold text-[#1F2937]">{{ food.quantity }} {{ food.unit }}</p>
+        </div>
+      </div>
+
+      <!-- Location -->
+      <div class="flex items-start gap-2 bg-gray-50 rounded-xl p-2.5">
+        <lucide-icon [img]="MapPin" class="w-4 h-4 text-[#7ED7A5] mt-0.5 flex-shrink-0" />
+        <div>
+          <p class="text-[9px] font-semibold uppercase tracking-wide text-gray-400 mb-0.5">Location</p>
+          <p class="text-[11px] font-bold text-[#1F2937] truncate max-w-[80px]">{{ food.location }}</p>
+        </div>
+      </div>
+
+      <!-- Expiry — full width -->
+      <div class="col-span-2 flex items-start gap-2 bg-gray-50 rounded-xl p-2.5">
+        <lucide-icon
+          [img]="Clock"
+          class="w-4 h-4 mt-0.5 flex-shrink-0"
+          [ngClass]="{
+            'text-amber-400': isExpiringSoon(),
+            'text-red-400':   isExpired(),
+            'text-[#7ED7A5]': !isExpiringSoon() && !isExpired()
+          }"
+        />
+        <div>
+          <p class="text-[9px] font-semibold uppercase tracking-wide text-gray-400 mb-0.5">Expiry</p>
+          <p
+            class="text-[11px] font-bold"
+            [ngClass]="{
+              'text-amber-500': isExpiringSoon(),
+              'text-red-500':   isExpired(),
+              'text-[#1F2937]': !isExpiringSoon() && !isExpired()
+            }"
+          >
+            {{ getExpiryLabel() }}
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Optional description -->
+    <p *ngIf="food.description" class="text-[11px] text-gray-500 leading-relaxed line-clamp-2">
+      {{ food.description }}
+    </p>
+
+  </div>
+
+  <!-- ── Divider ── -->
+  <div class="mx-4 border-t border-gray-100"></div>
+
+  <!-- ── Actions ── -->
+  <div class="px-4 py-3 flex items-center gap-2 flex-wrap">
+
+    <!-- NGO: Request Pickup -->
+    <button
+      *ngIf="authService.getRole() === 'ngo'"
+      (click)="handleRequest()"
+      [disabled]="requestSent || loading || isExpired()"
+      class="btn-request flex-1"
+      [class.btn-request--sent]="requestSent"
+    >
+      <!-- Loading spinner -->
+      <lucide-icon
+        *ngIf="loading"
+        [img]="Loader2"
+        class="w-4 h-4 animate-spin"
+      />
+      <!-- Sent check -->
+      <lucide-icon
+        *ngIf="!loading && requestSent"
+        [img]="Check"
+        class="w-4 h-4"
+      />
+      <!-- Default icon -->
+      <lucide-icon
+        *ngIf="!loading && !requestSent"
+        [img]="UserPlus"
+        class="w-4 h-4"
+      />
+      <span>{{ requestSent ? 'Request Sent' : 'Request Pickup' }}</span>
+    </button>
+
+    <!-- Restaurant: View Requests -->
+    <button
+      *ngIf="authService.getRole() === 'restaurant'"
+      (click)="handleViewRequests()"
+      class="btn-secondary"
+    >
+      <lucide-icon [img]="Eye" class="w-4 h-4" />
+      <span>View Requests</span>
+    </button>
+
+    <!-- Restaurant: Delete (only if still available) -->
+    <button
+      *ngIf="authService.getRole() === 'restaurant' && food.status === 'available'"
+      (click)="handleDelete()"
+      [disabled]="loading"
+      class="btn-delete"
+    >
+      <lucide-icon [img]="Loader2" *ngIf="loading" class="w-4 h-4 animate-spin" />
+      <lucide-icon [img]="Trash2" *ngIf="!loading" class="w-4 h-4" />
+      <span>Delete</span>
+    </button>
+
+  </div>
+
+</div>

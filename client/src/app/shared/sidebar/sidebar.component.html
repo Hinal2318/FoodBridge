@@ -1,0 +1,25 @@
+<aside class="w-64 bg-white border-r border-gray-100 flex flex-col h-[calc(100vh-4rem)] sticky top-16 shadow-sm shrink-0">
+  <!-- Role Badge -->
+  <div class="px-4 pt-5 pb-3">
+    <span class="text-xs font-semibold uppercase tracking-widest text-gray-400">
+      {{ role === 'ngo' ? 'NGO Portal' : 'Restaurant Portal' }}
+    </span>
+  </div>
+
+  <div class="flex-1 overflow-y-auto px-3 pb-6">
+    <nav class="space-y-1">
+      <a
+        *ngFor="let link of getLinks()"
+        [routerLink]="link.path"
+        routerLinkActive="!bg-[#E8F8EF] !text-[#22a261] !font-semibold !border-[#7ED7A5]"
+        [routerLinkActiveOptions]="{exact: false}"
+        class="flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent
+               text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium
+               transition-colors text-sm"
+      >
+        <lucide-icon [img]="link.icon" class="w-4 h-4 shrink-0"></lucide-icon>
+        {{ link.label }}
+      </a>
+    </nav>
+  </div>
+</aside>

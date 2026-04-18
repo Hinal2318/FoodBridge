@@ -1,0 +1,75 @@
+<div
+  *ngIf="visible"
+  [@alertAnim]
+  role="alert"
+  aria-live="assertive"
+  class="alert-wrapper relative flex items-start gap-3 rounded-2xl overflow-hidden bg-white px-4 py-3.5 w-full"
+  [ngClass]="getConfig().wrapperClass"
+>
+
+  <!-- Left accent bar (colored per type) -->
+  <span
+    class="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl"
+    [style.background]="getConfig().barColor"
+  ></span>
+
+  <!-- Nudge content away from bar -->
+  <div class="ml-1 flex items-start gap-3 w-full">
+
+    <!-- Icon -->
+    <div
+      class="flex-shrink-0 rounded-xl p-1.5 mt-0.5"
+      [ngClass]="getConfig().iconWrapClass"
+    >
+      <lucide-icon
+        [img]="getConfig().icon"
+        class="w-[18px] h-[18px]"
+        [ngClass]="getConfig().iconClass"
+      />
+    </div>
+
+    <!-- Text content -->
+    <div class="flex-1 min-w-0">
+      <div class="flex items-center gap-2">
+        <p class="text-[13px] font-semibold text-[#1F2937] leading-snug">
+          {{ message }}
+        </p>
+        <span
+          *ngIf="authService.getRole()"
+          class="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-black/5 text-gray-500"
+        >
+          {{ authService.getRole() }}
+        </span>
+      </div>
+      <p
+        *ngIf="description"
+        class="text-[11px] text-gray-500 leading-relaxed mt-0.5"
+      >
+        {{ description }}
+      </p>
+    </div>
+
+    <!-- Dismiss button -->
+    <button
+      *ngIf="dismissible"
+      (click)="dismiss()"
+      type="button"
+      aria-label="Dismiss"
+      class="flex-shrink-0 -mt-0.5 -mr-0.5 p-1 rounded-lg text-gray-400
+             transition-colors duration-150 hover:bg-black/5 hover:text-gray-600
+             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300"
+    >
+      <lucide-icon [img]="XIcon" class="w-4 h-4" />
+    </button>
+
+  </div>
+
+  <!-- Auto-close progress bar -->
+  <div
+    *ngIf="autoClose > 0"
+    class="progress-bar absolute bottom-0 left-0 right-0 h-[3px] rounded-b-2xl"
+    [style.background]="getProgressColor()"
+    [style.animation-duration]="autoClose + 'ms'"
+  ></div>
+
+</div>

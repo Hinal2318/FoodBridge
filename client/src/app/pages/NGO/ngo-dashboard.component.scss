@@ -1,0 +1,46 @@
+// Tailwind handles all utility styles via styles.scss
+// Only add component-specific overrides here that Tailwind can't handle
+
+:host {
+    display: block;
+}
+
+// Smooth slide-in animation for donation cards
+.donations-list>div {
+    animation: fadeSlideIn 0.3s ease both;
+
+    @for $i from 1 through 3 {
+        &:nth-child(#{$i}) {
+            animation-delay: #{$i * 0.08}s;
+        }
+    }
+}
+
+@keyframes fadeSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+// Stats section stagger animation
+app-stats-card {
+    animation: fadeSlideIn 0.35s ease both;
+
+    &:nth-child(1) {
+        animation-delay: 0.05s;
+    }
+
+    &:nth-child(2) {
+        animation-delay: 0.12s;
+    }
+
+    &:nth-child(3) {
+        animation-delay: 0.19s;
+    }
+}

@@ -1,21 +1,31 @@
-const express = require("express")
-const mongoose = require("mongoose")
-const cors = require("cors")
-require("dotenv").config()
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const mongoose = require('mongoose');
 
-const app = express()
+const app = express();
 
-app.use(cors())
-app.use(express.json())
+app.use(cors({ origin: 'http://localhost:4200', credentials: true }));
+app.use(express.json());
 
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log("MongoDB connected"))
-    .catch(err => console.log(err))
+app.use('/api/auth', require('./routes/Auth'));
+app.use('/api/food', require('./routes/Food'));
+app.use('/api/request', require('./routes/Request'));
+app.use('/api/stats', require('./routes/Stats'));
 
-app.get("/", (req, res) => {
-    res.send("API Running")
-})
+app.get('/', (_req, res) => res.json({ message: 'Food Waste API running ✅' }));
 
-const PORT = process.env.PORT || 5000
+app.use((err, _req, res, _next) => {
+    console.error(err.stack);
+    res.status(500).json({ message: 'Internal server error' });
+});
 
-app.listen(PORT, () => console.log(`Server running on ${PORT}`))
+mongoose
+    .connect(process.env.MONGO_URI)
+    .then(() => {
+        console.log('✅ MongoDB connected');
+        app.listen(process.env.PORT, () =>
+            console.log(`🚀 Server on http://localhost:${process.env.PORT}`)
+        );
+    })
+    .catch((err) => { console.error('❌ DB failed:', err.message); process.exit(1); });

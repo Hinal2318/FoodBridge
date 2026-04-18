@@ -1,0 +1,146 @@
+<div class="auth-bg min-h-screen flex items-center justify-center px-4 py-12">
+
+  <!-- Card -->
+  <div class="auth-card w-full max-w-[420px]">
+
+    <!-- ── Brand Bar ── -->
+    <div class="brand-bar">
+      <span class="brand-logo">🌿</span>
+      <span class="brand-name">FoodBridge</span>
+    </div>
+
+    <!-- ── Card Body ── -->
+    <div class="card-body">
+
+      <h1 class="card-title">Create account</h1>
+      <p class="card-subtitle">Join FoodBridge and start making a difference</p>
+
+      <!-- Success Alert -->
+      <app-alert
+        *ngIf="successMsg"
+        type="success"
+        [message]="successMsg"
+        [dismissible]="false"
+        class="block mb-5"
+      ></app-alert>
+
+      <!-- Error Alert -->
+      <app-alert
+        *ngIf="errorMsg"
+        type="error"
+        [message]="errorMsg"
+        [dismissible]="true"
+        (dismissed)="errorMsg = ''"
+        class="block mb-5"
+      ></app-alert>
+
+      <!-- Form -->
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="flex flex-col gap-4">
+
+        <!-- Full Name -->
+        <div class="field-group">
+          <label for="reg-name" class="field-label">Full name</label>
+          <input
+            id="reg-name"
+            type="text"
+            formControlName="name"
+            placeholder="Your full name"
+            autocomplete="name"
+            class="field-input"
+            [class.field-input--error]="name.invalid && name.touched"
+          />
+          <p *ngIf="name.touched && name.errors?.['required']" class="field-error">Name is required.</p>
+          <p *ngIf="name.touched && name.errors?.['minlength']" class="field-error">Name must be at least 2 characters.</p>
+        </div>
+
+        <!-- Email -->
+        <div class="field-group">
+          <label for="reg-email" class="field-label">Email address</label>
+          <input
+            id="reg-email"
+            type="email"
+            formControlName="email"
+            placeholder="you@example.com"
+            autocomplete="email"
+            class="field-input"
+            [class.field-input--error]="email.invalid && email.touched"
+          />
+          <p *ngIf="email.touched && email.errors?.['required']" class="field-error">Email is required.</p>
+          <p *ngIf="email.touched && email.errors?.['email']" class="field-error">Please enter a valid email address.</p>
+        </div>
+
+        <!-- Password -->
+        <div class="field-group">
+          <label for="reg-password" class="field-label">Password</label>
+          <div class="password-wrapper">
+            <input
+              id="reg-password"
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="password"
+              placeholder="Min. 6 characters"
+              autocomplete="new-password"
+              class="field-input pr-12"
+              [class.field-input--error]="password.invalid && password.touched"
+            />
+            <button type="button" (click)="togglePassword()" class="pw-toggle"
+              [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
+              {{ showPassword ? '🙈' : '👁️' }}
+            </button>
+          </div>
+          <p *ngIf="password.touched && password.errors?.['required']" class="field-error">Password is required.</p>
+          <p *ngIf="password.touched && password.errors?.['minlength']" class="field-error">Password must be at least 6 characters.</p>
+        </div>
+
+        <!-- Role -->
+        <div class="field-group">
+          <label for="reg-role" class="field-label">I am a…</label>
+          <select
+            id="reg-role"
+            formControlName="role"
+            class="field-input field-select"
+            [class.field-input--error]="role.invalid && role.touched"
+          >
+            <option value="" disabled selected>Select your role</option>
+            <option value="restaurant">🍽️ Restaurant</option>
+            <option value="ngo">🏛️ NGO / Organization</option>
+          </select>
+          <p *ngIf="role.touched && role.errors?.['required']" class="field-error">Please select a role.</p>
+        </div>
+
+        <!-- Location -->
+        <div class="field-group">
+          <label for="reg-location" class="field-label">City / Location</label>
+          <input
+            id="reg-location"
+            type="text"
+            formControlName="location"
+            placeholder="e.g. Ahmedabad"
+            autocomplete="address-level2"
+            class="field-input"
+            [class.field-input--error]="location.invalid && location.touched"
+          />
+          <p *ngIf="location.touched && location.errors?.['required']" class="field-error">Location is required.</p>
+        </div>
+
+        <!-- Submit -->
+        <button
+          id="register-submit"
+          type="submit"
+          class="btn-primary mt-1"
+          [disabled]="loading"
+        >
+          <span *ngIf="loading" class="btn-spinner"></span>
+          {{ loading ? 'Creating account…' : 'Create Account' }}
+        </button>
+
+      </form>
+
+      <!-- Footer link -->
+      <p class="auth-footer">
+        Already have an account?
+        <a routerLink="/login" class="auth-link">Sign in</a>
+      </p>
+
+    </div>
+  </div>
+</div>

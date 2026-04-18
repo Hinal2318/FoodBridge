@@ -1,0 +1,65 @@
+<div class="min-h-screen bg-[#F5F7F6] p-6 md:p-8">
+
+  <!-- Header -->
+  <div class="flex flex-wrap items-start justify-between gap-4 mb-8">
+    <div>
+      <h1 class="text-2xl font-bold text-[#1F2937] mb-1">Welcome back, {{ user?.name }} 👋</h1>
+      <p class="text-sm text-gray-500">Manage your food donations and requests.</p>
+    </div>
+    <a routerLink="/restaurant/add-food"
+       class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#7ED7A5] text-white font-semibold rounded-xl text-sm
+              hover:bg-[#5ec98e] hover:-translate-y-0.5 hover:shadow-md transition-all duration-200">
+      <lucide-icon [img]="PlusCircle" class="w-4 h-4"></lucide-icon>
+      Add Food
+    </a>
+  </div>
+
+  <app-loader *ngIf="loading"></app-loader>
+  <app-alert *ngIf="error" type="error" [message]="error" (dismissed)="error = ''"></app-alert>
+
+  <ng-container *ngIf="!loading && !error && stats">
+
+    <!-- Stats Cards -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
+      <app-stats-card title="Total Listings"    [value]="stats.totalListings"    [icon]="Package"      bgClass="bg-white border-blue-100"   textClass="text-[#6B8CFF]"   iconClass="bg-blue-50 text-blue-500"></app-stats-card>
+      <app-stats-card title="Active Listings"   [value]="stats.activeListings"   [icon]="TrendingUp"   bgClass="bg-white border-green-100"  textClass="text-[#7ED7A5]"   iconClass="bg-green-50 text-green-500"></app-stats-card>
+      <app-stats-card title="Pending Requests"  [value]="stats.pendingRequests"  [icon]="ClipboardList" bgClass="bg-white border-orange-100" textClass="text-orange-500"  iconClass="bg-orange-50 text-orange-400"></app-stats-card>
+      <app-stats-card title="Completed Pickups" [value]="stats.completedPickups" [icon]="CheckCircle"  bgClass="bg-white border-purple-100" textClass="text-purple-500"  iconClass="bg-purple-50 text-purple-500"></app-stats-card>
+    </section>
+
+    <!-- Quick Actions -->
+    <section class="mb-10">
+      <h2 class="text-base font-bold text-[#1F2937] mb-4 pb-2 border-b-2 border-[#E8F8EF]">Quick Actions</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <a routerLink="/restaurant/add-food"
+           class="flex items-center gap-4 p-5 bg-white rounded-xl border border-gray-200 shadow-sm hover:border-[#7ED7A5] hover:-translate-y-0.5 hover:shadow-md transition-all duration-200">
+          <span class="text-2xl w-12 h-12 flex items-center justify-center bg-[#E8F8EF] rounded-xl shrink-0">➕</span>
+          <div>
+            <p class="font-semibold text-sm">Add Food Listing</p>
+            <p class="text-xs text-gray-400">Post surplus food for NGOs</p>
+          </div>
+          <span class="text-[#7ED7A5] font-bold text-lg ml-auto">→</span>
+        </a>
+        <a routerLink="/restaurant/food-list"
+           class="flex items-center gap-4 p-5 bg-white rounded-xl border border-gray-200 shadow-sm hover:border-[#6B8CFF] hover:-translate-y-0.5 hover:shadow-md transition-all duration-200">
+          <span class="text-2xl w-12 h-12 flex items-center justify-center bg-[#EFF3FF] rounded-xl shrink-0">📦</span>
+          <div>
+            <p class="font-semibold text-sm">My Food Listings</p>
+            <p class="text-xs text-gray-400">View & manage all listings</p>
+          </div>
+          <span class="text-[#6B8CFF] font-bold text-lg ml-auto">→</span>
+        </a>
+        <a routerLink="/restaurant/requests"
+           class="flex items-center gap-4 p-5 bg-white rounded-xl border border-gray-200 shadow-sm hover:border-orange-400 hover:-translate-y-0.5 hover:shadow-md transition-all duration-200">
+          <span class="text-2xl w-12 h-12 flex items-center justify-center bg-orange-50 rounded-xl shrink-0">📋</span>
+          <div>
+            <p class="font-semibold text-sm">Pickup Requests</p>
+            <p class="text-xs text-gray-400">Approve or reject requests</p>
+          </div>
+          <span class="text-orange-400 font-bold text-lg ml-auto">→</span>
+        </a>
+      </div>
+    </section>
+
+  </ng-container>
+</div>

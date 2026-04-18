@@ -1,0 +1,94 @@
+<!-- ══════════════════════════════════
+     FULLSCREEN variant
+     ══════════════════════════════════ -->
+<div *ngIf="variant === 'fullscreen'" class="fullscreen-overlay">
+  <div class="flex flex-col items-center gap-4">
+    <!-- Decorative blob -->
+    <div class="blob"></div>
+    <!-- Leaf icon spinning -->
+    <lucide-icon
+      [img]="Leaf"
+      class="w-12 h-12 text-[#7ED7A5] animate-spin relative z-10"
+      style="animation-duration: 1.8s"
+    />
+    <p *ngIf="message || authService.getRole()" class="text-sm font-medium text-gray-500 relative z-10">
+      {{ message || (authService.getRole() === 'ngo' ? 'Finding food for your NGO...' : 'Managing restaurant donations...') }}
+    </p>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════
+     OVERLAY variant (covers parent)
+     ══════════════════════════════════ -->
+<div
+  *ngIf="overlay && variant !== 'fullscreen'"
+  class="absolute inset-0 z-20 flex items-center justify-center rounded-2xl bg-white/75 backdrop-blur-sm"
+>
+  <ng-container *ngTemplateOutlet="loaderBody"></ng-container>
+</div>
+
+
+<!-- ══════════════════════════════════
+     INLINE (default)
+     ══════════════════════════════════ -->
+<div
+  *ngIf="!overlay && variant !== 'fullscreen'"
+  class="flex flex-col items-center justify-center py-6 gap-3"
+>
+  <ng-container *ngTemplateOutlet="loaderBody"></ng-container>
+</div>
+
+
+<!-- ══════════════════════════════════
+     Shared body template
+     ══════════════════════════════════ -->
+<ng-template #loaderBody>
+
+  <!-- ── Spinner ── -->
+  <ng-container *ngIf="variant === 'spinner'">
+    <lucide-icon
+      [img]="Loader2"
+      [ngClass]="[iconSizeClass, iconColorClass]"
+      class="animate-spin"
+    />
+    <p *ngIf="message || authService.getRole()" class="text-xs font-medium text-gray-400">
+      {{ message || (authService.getRole() === 'ngo' ? 'Loading NGO portal...' : 'Loading restaurant data...') }}
+    </p>
+  </ng-container>
+
+  <!-- ── Dots ── -->
+  <ng-container *ngIf="variant === 'dots'">
+    <div class="flex items-center gap-1.5">
+      <span class="dot rounded-full" [ngClass]="[dotSizeClass, dotColorClass]" style="animation-delay: 0s"></span>
+      <span class="dot rounded-full" [ngClass]="[dotSizeClass, dotColorClass]" style="animation-delay: 0.18s"></span>
+      <span class="dot rounded-full" [ngClass]="[dotSizeClass, dotColorClass]" style="animation-delay: 0.36s"></span>
+    </div>
+    <p *ngIf="message || authService.getRole()" class="text-xs font-medium text-gray-400">
+      {{ message || (authService.getRole() === 'ngo' ? 'Connecting...' : 'Processing...') }}
+    </p>
+  </ng-container>
+
+  <!-- ── Pulse skeleton card ── -->
+  <ng-container *ngIf="variant === 'pulse'">
+    <div class="pulse-card w-72 rounded-2xl overflow-hidden bg-white"
+         style="border: 1px solid rgba(126,215,165,0.15); box-shadow: 0 1px 4px rgba(0,0,0,0.05)">
+      <!-- Card top accent -->
+      <div class="h-12 bg-[#E8F8EF]"></div>
+      <!-- Skeleton lines -->
+      <div class="p-4 flex flex-col gap-3">
+        <div class="shimmer h-3 rounded-full w-3/4"></div>
+        <div class="shimmer h-3 rounded-full w-1/2"></div>
+        <!-- Two meta boxes -->
+        <div class="grid grid-cols-2 gap-2 mt-1">
+          <div class="shimmer h-14 rounded-xl"></div>
+          <div class="shimmer h-14 rounded-xl" style="animation-delay: 0.15s"></div>
+        </div>
+      </div>
+    </div>
+    <p *ngIf="message || authService.getRole()" class="text-xs font-medium text-gray-400 mt-1">
+      {{ message || (authService.getRole() === 'ngo' ? 'Searching available food...' : 'Preparing donation list...') }}
+    </p>
+  </ng-container>
+
+</ng-template>

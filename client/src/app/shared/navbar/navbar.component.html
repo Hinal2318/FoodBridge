@@ -1,0 +1,38 @@
+<nav class="bg-white border-b border-gray-100 flex items-center justify-between px-6 py-0 shadow-sm h-16 w-full sticky top-0 z-50">
+
+  <!-- Brand -->
+  <a routerLink="/" class="text-xl font-bold text-gray-900 tracking-tight flex items-center gap-2 shrink-0">
+    <span class="text-2xl">🥬</span>
+    <span>FoodBridge</span>
+  </a>
+
+  <!-- Right: User info + Logout -->
+  <div class="flex items-center gap-3" *ngIf="isLoggedIn; else offline">
+    <!-- User info -->
+    <div class="hidden sm:flex flex-col items-end">
+      <span class="text-sm font-semibold text-gray-900 leading-none">{{ user?.name }}</span>
+      <span class="text-xs text-gray-400 capitalize mt-0.5">{{ user?.role }}</span>
+    </div>
+    <!-- Avatar circle -->
+    <div class="w-9 h-9 rounded-full bg-[#E8F8EF] text-[#22a261] flex items-center justify-center font-bold text-sm uppercase shrink-0">
+      {{ user?.name?.charAt(0) }}
+    </div>
+    <!-- Logout -->
+    <button
+      (click)="logout()"
+      title="Logout"
+      class="flex items-center gap-1.5 text-sm text-gray-500 hover:text-red-500 px-3 py-2 rounded-lg hover:bg-red-50 transition-colors">
+      <lucide-icon [img]="LogOut" class="w-4 h-4"></lucide-icon>
+      <span class="hidden sm:inline">Logout</span>
+    </button>
+  </div>
+
+  <!-- Offline: show Login / Register -->
+  <ng-template #offline>
+    <div class="flex gap-3">
+      <a routerLink="/login"    class="text-sm font-medium text-gray-600 hover:text-[#22a261] px-4 py-2 transition-colors">Login</a>
+      <a routerLink="/register" class="text-sm font-semibold bg-[#7ED7A5] hover:bg-[#5ec98e] text-white px-4 py-2 rounded-lg transition-colors">Register</a>
+    </div>
+  </ng-template>
+
+</nav>
